@@ -1,0 +1,21 @@
+/* TODO: Give each div a background to assist with setting layout.
+   Will remove after layout is set. */
+
+#header {
+  background: red;
+  height: 100px;
+  text-align: center
+}
+
+#pizzaDisplay, #orderDisplay {
+  margin-top: 15px;
+}
+#pizzaDisplay {
+  background: blue;
+  height: calc(100vh - 130px);
+}
+
+#orderDisplay {
+  background: lightgrey;
+  height: calc(100vh - 130px);
+}
