@@ -5,9 +5,13 @@ var Sizes = Object.freeze({
   large:   { value: 2, multiplier: 1.2, display: "Large" },
   xlarge:  { value: 3, multiplier: 1.5, display: "Extra Large" },
 });
-var sizes = $.map(Sizes, function(key) {
-  return key.display;
-});
+function getSizeFromValue(value) {
+  for (size in Sizes) {
+    if (Sizes[size].value === value) {
+      return Sizes[size];
+    };
+  };
+};
 var Toppings = Object.freeze({
   xtra_cheese: { value: 0, cost: 1.00, type: "cheese", display:"Extra Cheese" },
   pepperoni:   { value: 1, cost: 0.75, type: "meat", display:"Pepperoni" },
@@ -21,6 +25,13 @@ var Toppings = Object.freeze({
   onion:       { value: 9, cost: 0.80, type: "veg", display:"Onions" },
   jalapaneos:  { value: 10, cost: 0.75, type: "veg", display:"Jalapaneos" },
 });
+function getToppingFromValue(value) {
+  for (topping in Toppings) {
+    if (Toppings[topping].value === value) {
+      return Toppings[topping];
+    };
+  };
+};
 var meats = $.map(Toppings, function(key, value) {
   if (key.type === "meat") {
     return key.display;
@@ -72,7 +83,8 @@ Pizza.prototype.getSize = function() {
   });
 };
 Pizza.prototype.setSize = function(size) {
-  this.size = Sizes[size];
+  size = parseInt(size);
+  this.size = getSizeFromValue(size);
 }
 Pizza.prototype.cost = function() {
   var toppingsCost = 0;
@@ -86,6 +98,17 @@ function Order() {
   this.address;
   this.date;
   this.pizzas = [];
+};
+Order.prototype.addPizza = function(name, size) {
+  var pizza = new Pizza();
+  pizza.name = name;
+  pizza.setSize(size);
+  if (arguments.length > 2) {
+    for (var i = 2; i < arguments.length; i++) {
+      pizza.addTopping(arguments[i]);
+    };
+  };
+  this.pizzas.push(pizza);
 };
 Order.prototype.totalCost = function() {
   var totalCost = 0;
@@ -123,11 +146,11 @@ $(document).ready(function() {
                       addPepperoni:   $('button#addPepperoni'),
                       customizePizza: $('button#customizePizza') }
   };
-  sizes.forEach(function(size) {
+  for (size in Sizes) {
     dom.sizeList.append(
-      "<option>" + size + "</option>"
+      "<option value='" + Sizes[size].value + "'>" + Sizes[size].display + "</option>"
     );
-  });
+  };
   function updateOrderDetails() {
     dom.orderDetails.children().remove();
     order.pizzas.forEach(function(pizza) {
@@ -153,30 +176,15 @@ $(document).ready(function() {
       "<p>Total cost: <strong class='pull-right'>" + order.totalCost().toFixed(2) + "</strong></p>"
     );
   };
-
-  // TODO: Using fake order to style order details. Remove when styling is complete.
-  // var pizza = new Pizza();
-  // pizza.setSize("medium");
-  // pizza.addTopping("ham");
-  // pizza.name = "Custom";
-  // order.pizzas.push(pizza);
-  // setTimeout(function() {
-  //   var pizza = new Pizza();
-  //   pizza.setSize("large");
-  //   pizza.addTopping("pineapple");
-  //   pizza.name = "Custom2";
-  //   order.pizzas.push(pizza);
-  //   updateOrderDetails();
-  // }, 200);
-  //end fake order
-
   order.customer = customer;
   dom.customerName.text(order.customer.name);
   updateOrderDetails();
   dom.buttons.addHawaiian.click(function() {
-    alert("clicked addHawaiian");
+    var size = dom.combos.hawaiianSize.val()
+    order.addPizza("Hawaiian", size, 'pineapple', 'ham');
+    updateOrderDetails();
   });
   dom.buttons.customizePizza.click(function() {
-    alert(dom.combos.hawaiianSize.val());
+
   });
 });
