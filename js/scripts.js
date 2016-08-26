@@ -109,9 +109,11 @@ Pizza.prototype.cost = function() {
   return this.baseCost * this.size.multiplier + toppingsCost;
 };
 function Order() {
-  this.customer;
+  // this.customer;
   this.address;
   this.date;
+  this.delivery = false;
+  this.address;
   this.pizzas = [];
 };
 Order.prototype.addPizza = function(name, size) {
@@ -132,10 +134,6 @@ Order.prototype.totalCost = function() {
   });
   return totalCost;
 };
-function Customer(name) {
-  this.name = name;
-  this.addresses = [];
-};
 function Address() {
   this.name = "";
   this.street = "";
@@ -147,11 +145,21 @@ function Address() {
 // Front end logic
 $(document).ready(function() {
   var order = new Order();
-  var customer = new Customer("Guest");
+  // var customer = new Customer("Guest");
   var dom = {
-    customerName:   $(".customerName"),
-    orderDetails:   $("#orderDetails"),
+    // customerName:   $('.customerName'),
+    orderDetails:   $('.orderDetails'),
+    checkout:       $('#checkout'),
     sizeList:       $('.sizeList'),
+    addressForm:    $('#address'),
+    checkoutModal:  { all:     $('#checkoutModal'),
+                      header:  $('#checkoutModal .modal-header'),
+                      body:    $('#checkoutModal modal-body'),
+                      radio:   $('input[name=delivery]:radio'),
+                      form:    $('#checkoutModal #deliveryConfirm'),
+                      order:   $('#checkoutModal #orderConfirm'),
+                      confirm: $('#checkoutModal #confirmDelivery'),
+                      cancel:  $('#checkoutModal #cancelDelivery') },
     customizeModal: { all:     $('#customizeModal'),
                       header:  $('#customizeModal .modal-header'),
                       body:    $('#customizeModal .modal-body'),
@@ -190,22 +198,27 @@ $(document).ready(function() {
     );
   });
   function updateOrderDetails() {
+    if (order.pizzas.length) {
+      dom.checkout.slideDown();
+    } else {
+      dom.checkout.slideUp();
+    }
     dom.orderDetails.children().remove();
     order.pizzas.forEach(function(pizza) {
       dom.orderDetails.append(
         "<li>" +
-          "<h5 class='pizzaName'>" + pizza.name + " " + pizza.getSize() + "<span class='pull-right'>" + pizza.cost().toFixed(2) + "</span></h5>" +
-          "<ul id='" + pizza.id + "' class='pizzaToppings'></ul>" +
+          "<h5 class='pizzaName'>" + pizza.getSize() + " " + pizza.name + "<span class='pull-right'>" + pizza.cost().toFixed(2) + "</span></h5>" +
+          "<ul class=' pizzaToppings " + pizza.id + "'></ul>" +
         "</li>"
       );
       pizza.getToppings().forEach(function(topping) {
-        $('#' + pizza.id).append(
+        $('.' + pizza.id).append(
           "<li>" +
             "<p>" + topping + "</p>"+
           "</li>"
         );
       });
-      $('.pizzaName').last().click(function() {
+      $('#orderDisplay .pizzaName').last().click(function() {
         $(this).siblings().slideToggle();
       })
     });
@@ -214,8 +227,8 @@ $(document).ready(function() {
       "<p>Total cost: <strong class='pull-right'>" + order.totalCost().toFixed(2) + "</strong></p>"
     );
   };
-  order.customer = customer;
-  dom.customerName.text(order.customer.name);
+  // order.customer = customer;
+  // dom.customerName.text(order.customer.name);
   updateOrderDetails();
   dom.buttons.addHawaiian.click(function() {
     var size = dom.combos.hawaiianSize.val();
@@ -271,5 +284,43 @@ $(document).ready(function() {
   });
   dom.combos.customSize.change(function() {
     dom.buttons.customizePizza.prop("disabled", false);
+  });
+  dom.checkout.click(function() {
+    dom.checkoutModal.all.modal('show');
+  });
+  dom.checkoutModal.radio.change(function() {
+    order.delivery = parseInt($("input:radio[name=delivery]:checked").val());
+    if (order.delivery) {
+      dom.addressForm.slideDown();
+      $('span#deliveryType').text("delivery");
+    } else {
+      dom.addressForm.slideUp();
+      $('span#deliveryType').text("carry out");
+    };
+  });
+  dom.checkoutModal.confirm.click(function() {
+    dom.checkoutModal.form.hide();
+    dom.checkoutModal.order.show();
+    if (order.delivery) {
+      $('#deliveryInfo').text("Delivery");
+      var address = new Address();
+      address.name = $('input#name').val();
+      address.street = $('input#street').val();
+      address.city = $('input#city').val();
+      address.state = $('input#state').val();
+      address.zip = $('input#zip').val();
+      order.address = address;
+      $('#deliveryInfo').append(
+        "<p>" + order.address.name + "</p>" +
+        "<p>" + order.address.street + "</p>" +
+        "<p>" +
+          order.address.city + ", " +
+          order.address.state + " " +
+          order.address.zip +
+        "</p>"
+      );
+    } else {
+      $('#deliveryInfo').text("Carry out");
+    };
   });
 });

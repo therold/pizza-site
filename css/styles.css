@@ -23,15 +23,18 @@
   color: blue;
   cursor: pointer;
   text-align: center;
+  display: none;
 }
 #checkout:hover {
   text-decoration: underline;
 }
-#orderDetails {
+.orderDetails {
   list-style: none;
   padding-left: 0;
 }
-.pizzaToppings {
+#orderDisplay .pizzaToppings,
+#address,
+#orderConfirm {
   display: none;
 }
 .pizzaName {
@@ -42,7 +45,7 @@
   width: 100%;
   min-height: 300px;
   padding-left: 5px;
-  padding-right: 5px;/
+  padding-right: 5px;
 }
 .pizzaCombo h3 {
   padding-top: 10px;
