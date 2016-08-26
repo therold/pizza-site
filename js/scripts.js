@@ -5,13 +5,6 @@ var Sizes = Object.freeze({
   large:   { value: 2, multiplier: 1.2, display: "Large" },
   xlarge:  { value: 3, multiplier: 1.5, display: "Extra Large" },
 });
-function getSizeFromValue(value) {
-  for (size in Sizes) {
-    if (Sizes[size].value === value) {
-      return Sizes[size];
-    };
-  };
-};
 var Toppings = Object.freeze({
   xtra_cheese: { value: 0, cost: 1.00, type: "cheese", display:"Extra Cheese" },
   pepperoni:   { value: 1, cost: 0.75, type: "meat", display:"Pepperoni" },
@@ -25,6 +18,23 @@ var Toppings = Object.freeze({
   onion:       { value: 9, cost: 0.80, type: "veg", display:"Onions" },
   jalapaneos:  { value: 10, cost: 0.75, type: "veg", display:"Jalapaneos" },
 });
+var meats = $.map(Toppings, function(key, value) {
+  if (key.type === "meat") {
+    return key.display;
+  };
+});
+var veggies = $.map(Toppings, function(key, value) {
+  if (key.type === "veg") {
+    return key.display;
+  };
+});
+function getSizeFromValue(value) {
+  for (size in Sizes) {
+    if (Sizes[size].value === value) {
+      return Sizes[size];
+    };
+  };
+};
 function getToppingFromValue(value) {
   value = parseInt(value);
   for (topping in Toppings) {
@@ -40,16 +50,6 @@ function getToppingFromName(name) {
     };
   };
 };
-var meats = $.map(Toppings, function(key, value) {
-  if (key.type === "meat") {
-    return key.display;
-  };
-});
-var veggies = $.map(Toppings, function(key, value) {
-  if (key.type === "veg") {
-    return key.display;
-  };
-});
 function Pizza() {
   this.id = "p" + Date.now();
   this.name;
@@ -57,6 +57,22 @@ function Pizza() {
   this.toppings = [];
   this.baseCost = 12;
 };
+function Order() {
+  // this.customer;
+  this.address;
+  this.date;
+  this.delivery = false;
+  this.orderPlaced = false;
+  this.address;
+  this.pizzas = [];
+};
+function Address() {
+  this.name = "";
+  this.street = "";
+  this.city = "";
+  this.state = "";
+  this.zip = "";
+}
 Pizza.prototype.addTopping = function(topping) {
   var dontHaveTopping = (this.toppings.indexOf(Toppings[topping]) === -1);
   if (dontHaveTopping) {
@@ -108,15 +124,6 @@ Pizza.prototype.cost = function() {
   });
   return this.baseCost * this.size.multiplier + toppingsCost;
 };
-function Order() {
-  // this.customer;
-  this.address;
-  this.date;
-  this.delivery = false;
-  this.orderPlaced = false;
-  this.address;
-  this.pizzas = [];
-};
 Order.prototype.addPizza = function(name, size) {
   var pizza = new Pizza();
   pizza.name = name;
@@ -135,13 +142,6 @@ Order.prototype.totalCost = function() {
   });
   return totalCost;
 };
-function Address() {
-  this.name = "";
-  this.street = "";
-  this.city = "";
-  this.state = "";
-  this.zip = "";
-}
 
 // Front end logic
 $(document).ready(function() {
