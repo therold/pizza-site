@@ -218,19 +218,25 @@ $(document).ready(function() {
   dom.customerName.text(order.customer.name);
   updateOrderDetails();
   dom.buttons.addHawaiian.click(function() {
-    var size = dom.combos.hawaiianSize.val()
+    var size = dom.combos.hawaiianSize.val();
     order.addPizza("Hawaiian", size, 'pineapple', 'ham');
     updateOrderDetails();
+    dom.combos.hawaiianSize.val("");
+    dom.buttons.addHawaiian.prop("disabled", true);
   });
   dom.buttons.addSupreme.click(function() {
-    var size = dom.combos.supremeSize.val()
+    var size = dom.combos.supremeSize.val();
     order.addPizza("Supreme", size, 'pepperoni', 'sausage', 'peppers', 'onion');
     updateOrderDetails();
+    dom.combos.supremeSize.val("");
+    dom.buttons.addSupreme.prop("disabled", true);
   });
   dom.buttons.addPepperoni.click(function() {
-    var size = dom.combos.pepperoniSize.val()
+    var size = dom.combos.pepperoniSize.val();
     order.addPizza("Pepperoni", size, 'pepperoni');
     updateOrderDetails();
+    dom.combos.pepperoniSize.val("");
+    dom.buttons.addPepperoni.prop("disabled", true);
   });
   dom.buttons.customizePizza.click(function() {
     dom.customizeModal.all.modal('show');
@@ -238,7 +244,7 @@ $(document).ready(function() {
   dom.customizeModal.add.click(function() {
     var toppings = [];
     var pizza = new Pizza();
-    pizza.name = "custom";
+    pizza.name = "Custom Pizza";
     pizza.setSize(dom.combos.customSize.val());
     $("input:checkbox[name=toppings]:checked").each(function(){
       toppings.push($(this).val());
@@ -250,6 +256,20 @@ $(document).ready(function() {
     };
     order.pizzas.push(pizza);
     updateOrderDetails();
+    dom.combos.customSize.val("");
     dom.customizeModal.all.modal('hide');
+    dom.buttons.customizePizza.prop("disabled", true);
+  });
+  dom.combos.hawaiianSize.change(function() {
+    dom.buttons.addHawaiian.prop("disabled", false);
+  });
+  dom.combos.supremeSize.change(function() {
+    dom.buttons.addSupreme.prop("disabled", false);
+  });
+  dom.combos.pepperoniSize.change(function() {
+    dom.buttons.addPepperoni.prop("disabled", false);
+  });
+  dom.combos.customSize.change(function() {
+    dom.buttons.customizePizza.prop("disabled", false);
   });
 });
