@@ -26,8 +26,16 @@ var Toppings = Object.freeze({
   jalapaneos:  { value: 10, cost: 0.75, type: "veg", display:"Jalapaneos" },
 });
 function getToppingFromValue(value) {
+  value = parseInt(value);
   for (topping in Toppings) {
     if (Toppings[topping].value === value) {
+      return Toppings[topping];
+    };
+  };
+};
+function getToppingFromName(name) {
+  for (topping in Toppings) {
+    if (Toppings[topping].display === name) {
       return Toppings[topping];
     };
   };
@@ -55,6 +63,13 @@ Pizza.prototype.addTopping = function(topping) {
     this.toppings.push(Toppings[topping]);
   };
 };
+Pizza.prototype.addToppingByValue = function(value) {
+  var topping = getToppingFromValue(value);
+  var dontHaveTopping = (this.toppings.indexOf(topping) === -1);
+  if (dontHaveTopping) {
+    this.toppings.push(topping);
+  };
+}
 Pizza.prototype.removeTopping = function(topping) {
   var haveTopping = (this.toppings.indexOf(Toppings[topping]) !== -1);
   if (haveTopping) {
@@ -141,7 +156,9 @@ $(document).ready(function() {
                       header:  $('#customizeModal .modal-header'),
                       body:    $('#customizeModal .modal-body'),
                       meats:   $('#customizeModal #meats'),
-                      veggies: $('#customizeModal #veggies') },
+                      veggies: $('#customizeModal #veggies'),
+                      add:     $('#customizeModal #customizeAdd'),
+                      remove:  $('#customizeModal #customizeRemove') },
     combos:         { hawaiianSize:  $('select#comboHawaiianSize'),
                       supremeSize:   $('select#comboSupremeSize'),
                       pepperoniSize: $('select#comboPepperoniSize'),
@@ -157,16 +174,18 @@ $(document).ready(function() {
     );
   };
   meats.forEach(function(meat, i) {
+    value = getToppingFromName(meat).value;
     dom.customizeModal.meats.append(
       "<div class='checkbox'>" +
-        "<label><input type='checkbox' value='" + i +"'>" + meat + "</label>" +
+        "<label><input type='checkbox' name='toppings' value='" + value +"'>" + meat + "</label>" +
       "</div>"
     );
   });
   veggies.forEach(function(veg, i) {
+    value = getToppingFromName(veg).value;
     dom.customizeModal.veggies.append(
       "<div class='checkbox'>" +
-        "<label><input type='checkbox' value='" + i +"'>" + veg + "</label>" +
+        "<label><input type='checkbox' name='toppings' value='" + value +"'>" + veg + "</label>" +
       "</div>"
     );
   });
@@ -215,5 +234,22 @@ $(document).ready(function() {
   });
   dom.buttons.customizePizza.click(function() {
     dom.customizeModal.all.modal('show');
+  });
+  dom.customizeModal.add.click(function() {
+    var toppings = [];
+    var pizza = new Pizza();
+    pizza.name = "custom";
+    pizza.setSize(dom.combos.customSize.val());
+    $("input:checkbox[name=toppings]:checked").each(function(){
+      toppings.push($(this).val());
+    });
+    if (toppings) {
+      toppings.forEach(function(topping) {
+        pizza.addToppingByValue(topping);
+      });
+    };
+    order.pizzas.push(pizza);
+    updateOrderDetails();
+    dom.customizeModal.all.modal('hide');
   });
 });
