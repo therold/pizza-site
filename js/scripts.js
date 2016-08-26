@@ -5,7 +5,9 @@ var Sizes = Object.freeze({
   large:   { value: 2, multiplier: 1.2, display: "Large" },
   xlarge:  { value: 3, multiplier: 1.5, display: "Extra Large" },
 });
-var sizes = Object.keys(Sizes);
+var sizes = $.map(Sizes, function(key) {
+  return key.display;
+});
 var Toppings = Object.freeze({
   xtra_cheese: { value: 0, cost: 1.00, type: "cheese", display:"Extra Cheese" },
   pepperoni:   { value: 1, cost: 0.75, type: "meat", display:"Pepperoni" },
@@ -15,7 +17,7 @@ var Toppings = Object.freeze({
   mushrooms:   { value: 5, cost: 0.75, type: "veg", display:"Mushrooms" },
   olives:      { value: 6, cost: 0.75, type: "veg", display:"Olives" },
   peppers:     { value: 7, cost: 0.75, type: "veg", display:"Peppers" },
-  pineapple:    { value: 8, cost: 0.75, type: "veg", display:"Pineapples" },
+  pineapple:   { value: 8, cost: 0.75, type: "veg", display:"Pineapples" },
   onion:       { value: 9, cost: 0.80, type: "veg", display:"Onions" },
   jalapaneos:  { value: 10, cost: 0.75, type: "veg", display:"Jalapaneos" },
 });
@@ -109,9 +111,23 @@ $(document).ready(function() {
   var order = new Order();
   var customer = new Customer("Guest");
   var dom = {
-    customerName: $(".customerName"),
-    orderDetails: $("#orderDetails")
+    customerName:   $(".customerName"),
+    orderDetails:   $("#orderDetails"),
+    sizeList:       $('.sizeList'),
+    combos:         { hawaiianSize:  $('select#comboHawaiianSize'),
+                      supremeSize:   $('select#comboSupremeSize'),
+                      pepperoniSize: $('select#comboPepperoniSize'),
+                      customSize:    $('select#comboCustomSize') },
+    buttons:        { addHawaiian:    $('button#addHawaiian'),
+                      addSupreme:     $('button#addSupreme'),
+                      addPepperoni:   $('button#addPepperoni'),
+                      customizePizza: $('button#customizePizza') }
   };
+  sizes.forEach(function(size) {
+    dom.sizeList.append(
+      "<option>" + size + "</option>"
+    );
+  });
   function updateOrderDetails() {
     dom.orderDetails.children().remove();
     order.pizzas.forEach(function(pizza) {
@@ -139,23 +155,28 @@ $(document).ready(function() {
   };
 
   // TODO: Using fake order to style order details. Remove when styling is complete.
-  var pizza = new Pizza();
-  pizza.setSize("medium");
-  pizza.addTopping("ham");
-  pizza.name = "Custom";
-  order.pizzas.push(pizza);
-  setTimeout(function() {
-    var pizza = new Pizza();
-    pizza.setSize("large");
-    pizza.addTopping("pineapple");
-    pizza.name = "Custom2";
-    order.pizzas.push(pizza);
-    updateOrderDetails();
-  }, 200);
+  // var pizza = new Pizza();
+  // pizza.setSize("medium");
+  // pizza.addTopping("ham");
+  // pizza.name = "Custom";
+  // order.pizzas.push(pizza);
+  // setTimeout(function() {
+  //   var pizza = new Pizza();
+  //   pizza.setSize("large");
+  //   pizza.addTopping("pineapple");
+  //   pizza.name = "Custom2";
+  //   order.pizzas.push(pizza);
+  //   updateOrderDetails();
+  // }, 200);
   //end fake order
 
   order.customer = customer;
   dom.customerName.text(order.customer.name);
-
   updateOrderDetails();
+  dom.buttons.addHawaiian.click(function() {
+    alert("clicked addHawaiian");
+  });
+  dom.buttons.customizePizza.click(function() {
+    alert(dom.combos.hawaiianSize.val());
+  });
 });

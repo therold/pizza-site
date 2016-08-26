@@ -17,7 +17,53 @@
       </div>
       <div class="row">
         <div id="pizzaDisplay" class="col-xs-9">
-
+          <h3 class="text-center"><em>Select from one of our delicious pizza combos, or design your own!</em></h3>
+          <div class="row">
+            <div class="col-xs-3 pizzaComboCol">
+              <div class="pizzaCombo">
+                <h3 class="text-center">Hawaiian</h3>
+                <img src="img/hawaiian.png" alt="Hawaiian Pizza" class="img-responsive pizzaImg">
+                <select id="comboHawaiianSize" class="form-control sizeList">
+                  <option value="" selected disabled>Select size</option>
+                  <option value="" disabled>----------------</option>
+                </select>
+                <button id="addHawaiian" class="btn btn-info">Add Pizza</btn>
+              </div>
+            </div>
+            <div class="col-xs-3 pizzaComboCol">
+              <div class="pizzaCombo">
+                <h3 class="text-center">Supreme</h3>
+                <img src="img/supreme.png" alt="Supreme Pizza" class="img-responsive pizzaImg">
+                <select id="comboSupremeSize" class="form-control sizeList">
+                  <option value="" selected disabled>Select size</option>
+                  <option value="" disabled>----------------</option>
+                </select>
+                <button id="addSupreme" class="btn btn-info">Add Pizza</btn>
+              </div>
+            </div>
+            <div class="col-xs-3 pizzaComboCol">
+              <div class="pizzaCombo">
+                <h3 class="text-center">Pepperoni</h3>
+                <img src="img/pepperoni.png" alt="Pepperoni Pizza" class="img-responsive pizzaImg">
+                <select id="comboPepperoniSize" class="form-control sizeList">
+                  <option value="" selected disabled>Select size</option>
+                  <option value="" disabled>----------------</option>
+                </select>
+                <button id="addPepperoni" class="btn btn-info">Add Pizza</btn>
+              </div>
+            </div>
+            <div class="col-xs-3 pizzaComboCol">
+              <div class="pizzaCombo">
+                <h3 class="text-center">Custom</h3>
+                <img src="img/custom.png" alt="Custom Pizza" class="img-responsive pizzaImg">
+                <select id="comboCustomSize" class="form-control sizeList">
+                  <option value="" selected disabled>Select size</option>
+                  <option value="" disabled>----------------</option>
+                </select>
+                <button id="customizePizza" class="btn btn-info">Select toppings</btn>
+              </div>
+            </div>
+          </div>
         </div>
         <div id="orderDisplay" class="col-xs-3">
           <h4> Welcome, <span class="customerName"></span>!</h4>
