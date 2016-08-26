@@ -19,3 +19,21 @@
   background: lightgrey;
   height: calc(100vh - 130px);
 }
+#checkout {
+  color: blue;
+  cursor: pointer;
+  text-align: center;
+}
+#checkout:hover {
+  text-decoration: underline;
+}
+#orderDetails {
+  list-style: none;
+  padding-left: 0;
+}
+.pizzaToppings {
+  display: none;
+}
+.pizzaName {
+  cursor: pointer;
+}
