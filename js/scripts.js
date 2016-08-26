@@ -137,6 +137,11 @@ $(document).ready(function() {
     customerName:   $(".customerName"),
     orderDetails:   $("#orderDetails"),
     sizeList:       $('.sizeList'),
+    customizeModal: { all:     $('#customizeModal'),
+                      header:  $('#customizeModal .modal-header'),
+                      body:    $('#customizeModal .modal-body'),
+                      meats:   $('#customizeModal #meats'),
+                      veggies: $('#customizeModal #veggies') },
     combos:         { hawaiianSize:  $('select#comboHawaiianSize'),
                       supremeSize:   $('select#comboSupremeSize'),
                       pepperoniSize: $('select#comboPepperoniSize'),
@@ -151,6 +156,20 @@ $(document).ready(function() {
       "<option value='" + Sizes[size].value + "'>" + Sizes[size].display + "</option>"
     );
   };
+  meats.forEach(function(meat, i) {
+    dom.customizeModal.meats.append(
+      "<div class='checkbox'>" +
+        "<label><input type='checkbox' value='" + i +"'>" + meat + "</label>" +
+      "</div>"
+    );
+  });
+  veggies.forEach(function(veg, i) {
+    dom.customizeModal.veggies.append(
+      "<div class='checkbox'>" +
+        "<label><input type='checkbox' value='" + i +"'>" + veg + "</label>" +
+      "</div>"
+    );
+  });
   function updateOrderDetails() {
     dom.orderDetails.children().remove();
     order.pizzas.forEach(function(pizza) {
@@ -184,7 +203,17 @@ $(document).ready(function() {
     order.addPizza("Hawaiian", size, 'pineapple', 'ham');
     updateOrderDetails();
   });
+  dom.buttons.addSupreme.click(function() {
+    var size = dom.combos.supremeSize.val()
+    order.addPizza("Supreme", size, 'pepperoni', 'sausage', 'peppers', 'onion');
+    updateOrderDetails();
+  });
+  dom.buttons.addPepperoni.click(function() {
+    var size = dom.combos.pepperoniSize.val()
+    order.addPizza("Pepperoni", size, 'pepperoni');
+    updateOrderDetails();
+  });
   dom.buttons.customizePizza.click(function() {
-
+    dom.customizeModal.all.modal('show');
   });
 });
