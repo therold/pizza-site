@@ -2,6 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
+    <link href="https://fonts.googleapis.com/css?family=Sigmar+One" rel="stylesheet">
     <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css">
     <link href="css/styles.css" rel="stylesheet" type="text/css">
     <script src="js/jquery-3.1.0.js"></script>
@@ -24,53 +25,71 @@
               <div class="pizzaCombo">
                 <h3 class="text-center">Hawaiian</h3>
                 <img src="img/hawaiian.png" alt="Hawaiian Pizza" class="img-responsive pizzaImg">
-                <select id="comboHawaiianSize" class="form-control sizeList">
-                  <option value="" selected disabled>Select size</option>
-                  <option value="" disabled>----------------</option>
-                </select>
-                <button id="addHawaiian" class="btn btn-info" disabled>Add Pizza</btn>
+                <div class="input-group">
+                  <select id="comboHawaiianSize" class="form-control sizeList">
+                    <option value="" selected disabled>Select size</option>
+                    <option value="" disabled>----------------</option>
+                  </select>
+                  <span class="input-group-btn">
+                    <button id="addHawaiian" class="btn btn-info" disabled>+</btn>
+                  </span>
+                </div>
               </div>
             </div>
             <div class="col-xs-3 pizzaComboCol">
               <div class="pizzaCombo">
                 <h3 class="text-center">Supreme</h3>
                 <img src="img/supreme.png" alt="Supreme Pizza" class="img-responsive pizzaImg">
-                <select id="comboSupremeSize" class="form-control sizeList">
-                  <option value="" selected disabled>Select size</option>
-                  <option value="" disabled>----------------</option>
-                </select>
-                <button id="addSupreme" class="btn btn-info" disabled>Add Pizza</btn>
+                <div class="input-group">
+                  <select id="comboSupremeSize" class="form-control sizeList">
+                    <option value="" selected disabled>Select size</option>
+                    <option value="" disabled>----------------</option>
+                  </select>
+                  <span class="input-group-btn">
+                    <button id="addSupreme" class="btn btn-info" disabled>+</btn>
+                  </span>
+                </div>
               </div>
             </div>
             <div class="col-xs-3 pizzaComboCol">
               <div class="pizzaCombo">
                 <h3 class="text-center">Pepperoni</h3>
                 <img src="img/pepperoni.png" alt="Pepperoni Pizza" class="img-responsive pizzaImg">
-                <select id="comboPepperoniSize" class="form-control sizeList">
-                  <option value="" selected disabled>Select size</option>
-                  <option value="" disabled>----------------</option>
-                </select>
-                <button id="addPepperoni" class="btn btn-info" disabled>Add Pizza</btn>
+                <div class="input-group">
+                  <select id="comboPepperoniSize" class="form-control sizeList">
+                    <option value="" selected disabled>Select size</option>
+                    <option value="" disabled>----------------</option>
+                  </select>
+                  <span class="input-group-btn">
+                    <button id="addPepperoni" class="btn btn-info" disabled>+</btn>
+                  </span>
+                </div>
               </div>
             </div>
             <div class="col-xs-3 pizzaComboCol">
               <div class="pizzaCombo">
                 <h3 class="text-center">Custom</h3>
                 <img src="img/custom.png" alt="Custom Pizza" class="img-responsive pizzaImg">
-                <select id="comboCustomSize" class="form-control sizeList">
-                  <option value="" selected disabled>Select size</option>
-                  <option value="" disabled>----------------</option>
-                </select>
-                <button id="customizePizza" class="btn btn-info" disabled>Select toppings</btn>
+                <div class="input-group">
+                  <select id="comboCustomSize" class="form-control sizeList">
+                    <option value="" selected disabled>Select size</option>
+                    <option value="" disabled>----------------</option>
+                  </select>
+                  <span class="input-group-btn">
+                    <button id="customizePizza" class="btn btn-info" disabled>+</btn>
+                  </span>
+                </div>
               </div>
             </div>
           </div>
         </div>
-        <div id="orderDisplay" class="col-xs-3">
-          <!-- <h4> Welcome, <span class="customerName"></span>!</h4> -->
-          <h4>Current order:</h4>
-          <ul class="orderDetails"></ul>
-          <p id="checkout" id="checkout">Checkout</p>
+        <div class="col-xs-3">
+          <div id="orderDisplay">
+            <!-- <h4> Welcome, <span class="customerName"></span>!</h4> -->
+            <h4>Current order:</h4>
+            <ul class="orderDetails"></ul>
+            <p id="checkout" id="checkout">Checkout</p>
+          </div>
         </div>
       </div>
     </div>
@@ -104,7 +123,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span></button>
-            <h4 class="modal-title">Confirm your order.</h4>
+            <h3 class="modal-title">Please confirm your order.</h3>
           </div>
           <div class="modal-body">
             <div id="deliveryConfirm">
@@ -147,14 +166,13 @@
               <div class="row">
                 <div class="col-xs-12">
                   <button id="confirmDelivery" class="btn btn-success pull-right">Confirm <span id="deliveryType">carry out</span></button>
-                  <button id="cancelDelivery" class="btn btn-danger pull-right">Cancel</button>
                 </div>
               </div>
             </div>
             <div id="orderConfirm">
               <div class="row">
                 <div class="col-xs-12">
-                  <h3>Delivery type:</h3>
+                  <h3>Delivery details:</h3>
                   <p id="deliveryInfo"></p>
                 </div>
               </div>

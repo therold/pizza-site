@@ -113,6 +113,7 @@ function Order() {
   this.address;
   this.date;
   this.delivery = false;
+  this.orderPlaced = false;
   this.address;
   this.pizzas = [];
 };
@@ -301,6 +302,8 @@ $(document).ready(function() {
   dom.checkoutModal.confirm.click(function() {
     dom.checkoutModal.form.hide();
     dom.checkoutModal.order.show();
+    dom.checkoutModal.header.children().remove();
+    dom.checkoutModal.header.append("<h3>Order confirmed! See you soon.</h3>");
     if (order.delivery) {
       $('#deliveryInfo').text("Delivery");
       var address = new Address();
@@ -321,6 +324,17 @@ $(document).ready(function() {
       );
     } else {
       $('#deliveryInfo').text("Carry out");
+    };
+    order.orderPlaced = true;
+  });
+  dom.checkoutModal.all.on('hidden.bs.modal', function() {
+    if (order.orderPlaced) {
+      order = new Order();
+      updateOrderDetails();
+      dom.checkoutModal.form.show();
+      dom.checkoutModal.order.hide();
+      dom.checkoutModal.header.children().remove();
+      dom.checkoutModal.header.append("<h3>Please confirm your order.</h3>");
     };
   });
 });
