@@ -77,6 +77,23 @@ Pizza.prototype.cost = function() {
   });
   return (this.baseCost * this.size.multiplier + toppingsCost).toFixed(2);
 };
+function Order() {
+  this.person = "";
+  this.address = "";
+  this.date = "";
+  this.pizzas = [];
+};
+function Customer() {
+  this.name = "";
+  this.addresses = [];
+};
+function Address() {
+  this.name = "";
+  this.street = "";
+  this.city = "";
+  this.state = "";
+  this.zip = "";
+}
 
 // Front end logic
 $(document).ready(function() {
