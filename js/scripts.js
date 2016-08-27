@@ -18,16 +18,6 @@ var Toppings = Object.freeze({
   onion:       { value: 9, cost: 0.80, type: "veg", display:"Onions" },
   jalapaneos:  { value: 10, cost: 0.75, type: "veg", display:"Jalapaneos" },
 });
-var meats = $.map(Toppings, function(key, value) {
-  if (key.type === "meat") {
-    return key.display;
-  };
-});
-var veggies = $.map(Toppings, function(key, value) {
-  if (key.type === "veg") {
-    return key.display;
-  };
-});
 function getSizeFromValue(value) {
   for (size in Sizes) {
     if (Sizes[size].value === value) {
@@ -164,17 +154,7 @@ $(document).ready(function() {
                       meats:   $('#customizeModal #meats'),
                       veggies: $('#customizeModal #veggies'),
                       add:     $('#customizeModal #customizeAdd'),
-                      remove:  $('#customizeModal #customizeRemove') },
-    combos:         { hawaiianSize:  $('select#comboHawaiianSize'),
-                      supremeSize:   $('select#comboSupremeSize'),
-                      pepperoniSize: $('select#comboPepperoniSize'),
-                      customSize:    $('select#comboCustomSize') },
-    buttons:        { addHawaiian:    $('button#addHawaiian'),
-                      addSupreme:     $('button#addSupreme'),
-                      addPepperoni:   $('button#addPepperoni'),
-                      customizePizza: $('button#addCustom') },
-    hawaiian:        { add:  $('button#addHawaiian'),
-                       size: $('select#comboHawaiianSize') }
+                      remove:  $('#customizeModal #customizeRemove') }
   };
   var pizzas = {
     hawaiian:   { display:  "Hawaiian",
@@ -199,22 +179,19 @@ $(document).ready(function() {
       "<option value='" + Sizes[size].value + "'>" + Sizes[size].display + "</option>"
     );
   };
-  meats.forEach(function(meat, i) {
-    value = getToppingFromName(meat).value;
-    dom.customizeModal.meats.append(
-      "<div class='checkbox'>" +
-        "<label><input type='checkbox' name='toppings' value='" + value +"'>" + meat + "</label>" +
-      "</div>"
-    );
-  });
-  veggies.forEach(function(veg, i) {
-    value = getToppingFromName(veg).value;
-    dom.customizeModal.veggies.append(
-      "<div class='checkbox'>" +
-        "<label><input type='checkbox' name='toppings' value='" + value +"'>" + veg + "</label>" +
-      "</div>"
-    );
-  });
+  function showTopping(topping) {
+    var output = "<div class='checkbox'>" +
+        "<label><input type='checkbox' name='toppings' value='" + Toppings[topping].value +"'>" + Toppings[topping].display + "</label>" +
+      "</div>";
+    return output
+  }
+  for (topping in Toppings) {
+    if (Toppings[topping].type === "meat") {
+      dom.customizeModal.meats.append(showTopping(topping));
+    } else if (Toppings[topping].type === "veg") {
+      dom.customizeModal.veggies.append(showTopping(topping));
+    };
+  };
   function updateOrderDetails() {
     if (order.pizzas.length) {
       dom.checkout.slideDown();
@@ -266,7 +243,7 @@ $(document).ready(function() {
   pizzas.pepperoni.add.click(function() {
     addPremadePizza("pepperoni");
   });
-  dom.buttons.customizePizza.click(function() {
+  pizzas.custom.add.click(function() {
     dom.customizeModal.all.modal('show');
   });
   dom.customizeModal.add.click(function() {
@@ -284,20 +261,17 @@ $(document).ready(function() {
     addPremadePizza("custom");
     dom.customizeModal.all.modal('hide');
   });
-  dom.buttons.customizePizza.click(function() {
-    dom.customizeModal.all.modal('show');
+  pizzas.hawaiian.size.change(function() {
+    pizzas.hawaiian.add.prop("disabled", false);
   });
-  dom.combos.hawaiianSize.change(function() {
-    dom.buttons.addHawaiian.prop("disabled", false);
+  pizzas.supreme.size.change(function() {
+    pizzas.supreme.add.prop("disabled", false);
   });
-  dom.combos.supremeSize.change(function() {
-    dom.buttons.addSupreme.prop("disabled", false);
+  pizzas.pepperoni.size.change(function() {
+    pizzas.pepperoni.add.prop("disabled", false);
   });
-  dom.combos.pepperoniSize.change(function() {
-    dom.buttons.addPepperoni.prop("disabled", false);
-  });
-  dom.combos.customSize.change(function() {
-    dom.buttons.customizePizza.prop("disabled", false);
+  pizzas.custom.size.change(function() {
+    pizzas.custom.add.prop("disabled", false);
   });
   dom.checkout.click(function() {
     dom.checkoutModal.all.modal('show');
