@@ -72,20 +72,17 @@ function Address() {
   this.city = "";
   this.state = "";
   this.zip = "";
-}
-Pizza.prototype.addTopping = function(topping) {
-  var dontHaveTopping = (this.toppings.indexOf(Toppings[topping]) === -1);
-  if (dontHaveTopping) {
-    this.toppings.push(Toppings[topping]);
-  };
 };
-Pizza.prototype.addToppingByValue = function(value) {
-  var topping = getToppingFromValue(value);
+Pizza.prototype.addTopping = function(topping) {
   var dontHaveTopping = (this.toppings.indexOf(topping) === -1);
   if (dontHaveTopping) {
     this.toppings.push(topping);
   };
-}
+};
+Pizza.prototype.addToppingByValue = function(value) {
+  var topping = getToppingFromValue(value);
+  this.addTopping(topping);
+};
 Pizza.prototype.removeTopping = function(topping) {
   var haveTopping = (this.toppings.indexOf(Toppings[topping]) !== -1);
   if (haveTopping) {
@@ -116,7 +113,7 @@ Pizza.prototype.getSize = function() {
 Pizza.prototype.setSize = function(size) {
   size = parseInt(size);
   this.size = getSizeFromValue(size);
-}
+};
 Pizza.prototype.cost = function() {
   var toppingsCost = 0;
   this.toppings.forEach(function(topping) {
@@ -129,9 +126,9 @@ Order.prototype.addPizza = function(name, size) {
   pizza.name = name;
   pizza.setSize(size);
   if (arguments.length > 2) {
-    for (var i = 2; i < arguments.length; i++) {
-      pizza.addTopping(arguments[i]);
-    };
+    arguments[2].forEach(function(topping) {
+      pizza.addTopping(Toppings[topping]);
+    });
   };
   this.pizzas.push(pizza);
 };
@@ -175,7 +172,27 @@ $(document).ready(function() {
     buttons:        { addHawaiian:    $('button#addHawaiian'),
                       addSupreme:     $('button#addSupreme'),
                       addPepperoni:   $('button#addPepperoni'),
-                      customizePizza: $('button#customizePizza') }
+                      customizePizza: $('button#addCustom') },
+    hawaiian:        { add:  $('button#addHawaiian'),
+                       size: $('select#comboHawaiianSize') }
+  };
+  var pizzas = {
+    hawaiian:   { display:  "Hawaiian",
+                  add:      $('button#addHawaiian'),
+                  size:     $('select#comboHawaiianSize'),
+                  toppings: ['pineapple', 'ham'] },
+    supreme:    { display:  "Supreme",
+                  add:      $('button#addSupreme'),
+                  size:     $('select#comboSupremeSize'),
+                  toppings: ['pepperoni', 'sausage', 'peppers', 'onion'] },
+    pepperoni:  { display:  "Pepperoni",
+                  add:      $('button#addPepperoni'),
+                  size:     $('select#comboPepperoniSize'),
+                  toppings: ['pepperoni'] },
+    custom:     { display:  "Custom",
+                  add:      $('button#addCustom'),
+                  size:     $('select#comboCustomSize'),
+                  toppings: [] },
   };
   for (size in Sizes) {
     dom.sizeList.append(
@@ -231,48 +248,44 @@ $(document).ready(function() {
   // order.customer = customer;
   // dom.customerName.text(order.customer.name);
   updateOrderDetails();
-  dom.buttons.addHawaiian.click(function() {
-    var size = dom.combos.hawaiianSize.val();
-    order.addPizza("Hawaiian", size, 'pineapple', 'ham');
+  function addPremadePizza(pizza) {
+    var display = pizzas[pizza].display
+    var size = parseInt(pizzas[pizza].size.val());
+    var toppings = pizzas[pizza].toppings;
+    order.addPizza(display, size, toppings);
+    pizzas[pizza].size.val("");
+    pizzas[pizza].add.prop("disabled", true);
     updateOrderDetails();
-    dom.combos.hawaiianSize.val("");
-    dom.buttons.addHawaiian.prop("disabled", true);
+};
+  pizzas.hawaiian.add.click(function() {
+    addPremadePizza("hawaiian");
   });
-  dom.buttons.addSupreme.click(function() {
-    var size = dom.combos.supremeSize.val();
-    order.addPizza("Supreme", size, 'pepperoni', 'sausage', 'peppers', 'onion');
-    updateOrderDetails();
-    dom.combos.supremeSize.val("");
-    dom.buttons.addSupreme.prop("disabled", true);
+  pizzas.supreme.add.click(function() {
+    addPremadePizza("supreme");
   });
-  dom.buttons.addPepperoni.click(function() {
-    var size = dom.combos.pepperoniSize.val();
-    order.addPizza("Pepperoni", size, 'pepperoni');
-    updateOrderDetails();
-    dom.combos.pepperoniSize.val("");
-    dom.buttons.addPepperoni.prop("disabled", true);
+  pizzas.pepperoni.add.click(function() {
+    addPremadePizza("pepperoni");
   });
   dom.buttons.customizePizza.click(function() {
     dom.customizeModal.all.modal('show');
   });
   dom.customizeModal.add.click(function() {
     var toppings = [];
-    var pizza = new Pizza();
-    pizza.name = "Custom Pizza";
-    pizza.setSize(dom.combos.customSize.val());
     $("input:checkbox[name=toppings]:checked").each(function(){
-      toppings.push($(this).val());
+      for (topping in Toppings) {
+        if (Toppings[topping].value === parseInt($(this).val())) {
+          toppings.push(topping);
+        };
+      };
     });
     if (toppings) {
-      toppings.forEach(function(topping) {
-        pizza.addToppingByValue(topping);
-      });
+      pizzas.custom.toppings = toppings;
     };
-    order.pizzas.push(pizza);
-    updateOrderDetails();
-    dom.combos.customSize.val("");
+    addPremadePizza("custom");
     dom.customizeModal.all.modal('hide');
-    dom.buttons.customizePizza.prop("disabled", true);
+  });
+  dom.buttons.customizePizza.click(function() {
+    dom.customizeModal.all.modal('show');
   });
   dom.combos.hawaiianSize.change(function() {
     dom.buttons.addHawaiian.prop("disabled", false);
